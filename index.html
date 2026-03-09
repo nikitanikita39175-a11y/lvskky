@@ -1206,7 +1206,12 @@ playButton.addEventListener("click",()=>{
 if(audio.paused){
 
 audio.play()
-playButton.innerHTML="❚❚"
+playButton.innerHTML = `
+<svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+<rect x="6" y="5" width="4" height="14"></rect>
+<rect x="14" y="5" width="4" height="14"></rect>
+</svg>
+`
 
 if(typeof cosmosBoostTarget !== "undefined"){
 cosmosBoostTarget = 1.35
@@ -1215,7 +1220,11 @@ cosmosBoostTarget = 1.35
 }else{
 
 audio.pause()
-playButton.innerHTML="▶️"
+playButton.innerHTML = `
+<svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+<polygon points="8,5 19,12 8,19"></polygon>
+</svg>
+`
 
 if(typeof cosmosBoostTarget !== "undefined"){
 cosmosBoostTarget = 1

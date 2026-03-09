@@ -1382,7 +1382,11 @@ updateTimePosition(progress)
 audio.addEventListener("ended",()=>{
 
 fill.style.width="0%"
-playButton.innerHTML="▶️"
+playButton.innerHTML = `
+<svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+<polygon points="8,5 19,12 8,19"></polygon>
+</svg>
+`
 
 updateTimePosition(0)
 

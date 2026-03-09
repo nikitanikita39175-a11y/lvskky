@@ -513,7 +513,77 @@ white-space:nowrap;
 
 }
 
+@media (max-width:768px){
+
+/* уменьшаем заголовок */
+
+.glitch{
+font-size:42px;
+}
+
+/* уменьшаем аватар */
+
+.artist{
+width:160px;
+height:160px;
+}
+
+/* кнопки соцсетей */
+
+.buttons{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:12px;
+}
+
+.buttons a{
+width:220px;
+padding:10px 20px;
+font-size:14px;
+text-align:center;
+margin:0;
+}
+
+/* отступы секций */
+
+section{
+padding:80px 20px;
+}
+
+/* релизы в один столбец */
+
+.releases{
+grid-template-columns:1fr;
+}
+
+/* плеер меньше */
+
+.player-ui{
+height:90px;
+}
+
+/* текст трека */
+
+.player-title{
+font-size:18px;
+}
+
+.player-artist{
+font-size:11px;
+}
+
+/* кнопка play */
+
+.play-button{
+width:55px;
+height:55px;
+font-size:20px;
+}
+
+}
 </style>
+
 </head>
 
 <body>
@@ -1314,6 +1384,8 @@ cosmosBoostTarget = 1
 })
 
 })
+
+
 
 </script>
 

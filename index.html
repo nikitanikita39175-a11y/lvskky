@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LVSKKY</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Montserrat;
+background:#000;
+color:white;
+overflow-x:hidden;
+}
+
+/* canvas */
+
+#constellationCanvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:-1;
+}
+
+/* loader */
+
+#loader{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#000;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:999;
+transition:opacity .6s;
+}
+
+.loader-title{
+font-family:Orbitron;
+font-size:60px;
+letter-spacing:6px;
+animation:glitch 1.5s infinite;
+}
+
+@keyframes glitch{
+0%{text-shadow:3px 0 red,-3px 0 cyan}
+50%{text-shadow:-3px 0 red,3px 0 cyan}
+100%{text-shadow:3px 0 red,-3px 0 cyan}
+}
+
+.progress{
+width:220px;
+height:4px;
+background:#222;
+margin-top:30px;
+border-radius:4px;
+overflow:hidden;
+}
+
+.bar{
+width:0%;
+height:100%;
+background:#fff;
+animation:load 2.5s forwards;
+}
+
+@keyframes load{
+to{width:100%}
+}
+
+/* nav */
+
+nav{
+position:fixed;
+width:100%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 40px;
+backdrop-filter:blur(6px);
+z-index:10;
+}
+
+nav a{
+margin-left:20px;
+text-decoration:none;
+color:white;
+opacity:.7;
+}
+
+nav a:hover{
+opacity:1;
+}
+
+/* hero */
+
+.hero{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+}
+
+.artist{
+width:220px;
+height:220px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid white;
+box-shadow:0 0 25px white;
+animation:breathe 4s ease-in-out infinite;
+}
+
+@keyframes breathe{
+0%{transform:scale(1)}
+50%{transform:scale(1.05)}
+100%{transform:scale(1)}
+}
+
+.glitch{
+font-family:Orbitron;
+font-size:72px;
+margin-top:20px;
+}
+
+/* buttons */
+
+.buttons{
+margin-top:30px;
+}
+
+.buttons a{
+margin:10px;
+padding:12px 28px;
+border-radius:30px;
+border:1px solid rgba(255,255,255,0.45);
+background:rgba(255,255,255,0.05);
+text-decoration:none;
+color:white;
+transition:.3s;
+}
+
+.buttons a:hover{
+transform:scale(1.05);
+border:1px solid white;
+box-shadow:
+0 0 8px rgba(255,255,255,0.6),
+0 0 18px rgba(255,255,255,0.4),
+0 0 30px rgba(255,255,255,0.2);
+}
+
+/* arrows */
+
+.scroll-down,
+.scroll-up{
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+flex-direction:column;
+gap:6px;
+cursor:pointer;
+transition:opacity .4s;
+filter: drop-shadow(0 0 8px rgba(255,255,255,0.7));
+}
+
+.scroll-down{
+position:fixed;
+bottom:40px;
+left:50%;
+transform:translateX(-50%);
+z-index:20;
+}
+
+.scroll-up{
+position:fixed;
+top:90px;
+left:50%;
+transform:translateX(-50%);
+opacity:0;
+pointer-events:none;
+z-index:20;
+}
+
+.arrow{
+width:18px;
+height:18px;
+border-right:2px solid white;
+border-bottom:2px solid white;
+transform:rotate(45deg);
+animation:arrowDown 1.6s infinite;
+}
+
+.arrow:nth-child(2){animation-delay:.2s}
+.arrow:nth-child(3){animation-delay:.4s}
+
+.arrow.up{
+transform:rotate(-135deg);
+animation:arrowUp 1.6s infinite;
+}
+
+@keyframes arrowDown{
+0%{opacity:0; transform:rotate(45deg) translate(-4px,-4px)}
+50%{opacity:1}
+100%{opacity:0; transform:rotate(45deg) translate(6px,6px)}
+}
+
+@keyframes arrowUp{
+0%{opacity:0; transform:rotate(-135deg) translate(-6px,-6px)}
+50%{opacity:1}
+100%{opacity:0; transform:rotate(-135deg) translate(6px,6px)}
+}
+
+/* sections */
+
+section{
+padding:120px 20px;
+max-width:900px;
+margin:auto;
+text-align:center;
+}
+
+/* releases */
+
+.releases{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:25px;
+margin-top:40px;
+}
+
+.card{
+padding:25px;
+border-radius:16px;
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.55);
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+height:90px;
+flex-direction:column;
+transition:.35s;
+}
+
+.card:hover{
+transform:translateY(-6px);
+border:1px solid rgba(255,255,255,0.9);
+box-shadow:
+0 0 15px rgba(255,255,255,0.45),
+0 0 35px rgba(255,255,255,0.35),
+0 0 70px rgba(255,255,255,0.25);
+}
+
+/* tell me */
+
+/* =========================
+   TELL ME PLAYER V3 STYLE
+========================= */
+
+.tellme{
+
+margin-top:40px;
+
+border-radius:16px;
+overflow:hidden;
+
+border:1px solid rgba(255,255,255,0.65);
+
+cursor:pointer;
+position:relative;
+
+display:flex;
+flex-direction:column;
+
+box-shadow:
+0 0 12px rgba(255,255,255,0.25),
+0 0 35px rgba(255,255,255,0.18),
+0 0 60px rgba(255,255,255,0.08);
+
+}
+
+/* play кнопка */
+
+.play-button{
+
+position:absolute;
+
+top:50%;
+left:50%;
+
+transform:translate(-50%,-50%);
+
+width:70px;
+height:70px;
+
+border-radius:50%;
+
+border:2px solid rgba(255,255,255,0.7);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:26px;
+
+background:rgba(0,0,0,0.35);
+
+backdrop-filter:blur(6px);
+
+cursor:pointer;
+
+transition:.25s;
+
+}
+
+.play-button:hover{
+
+transform:translate(-50%,-50%) scale(1.08);
+
+box-shadow:
+
+0 0 25px rgba(255,255,255,0.6),
+0 0 50px rgba(255,255,255,0.3);
+
+}
+
+/* квадратная обложка */
+
+.tellme-cover{
+
+width:100%;
+aspect-ratio:1/1;
+
+object-fit:cover;
+
+opacity:0.35;
+
+}
+
+/* прогресс заливка */
+
+.player-fill{
+
+position:absolute;
+left:0;
+top:0;
+
+height:100%;
+width:0%;
+
+background:
+linear-gradient(
+90deg,
+rgba(255,255,255,0.12) 0%,
+rgba(255,255,255,0.08) 35%,
+rgba(255,255,255,0.04) 65%,
+rgba(255,255,255,0.01) 90%,
+rgba(255,255,255,0) 100%
+);
+
+box-shadow:
+0 0 12px rgba(255,255,255,0.35),
+0 0 25px rgba(255,255,255,0.25),
+0 0 40px rgba(255,255,255,0.15);
+
+transition:width .08s linear;
+
+z-index:1;
+
+}
+
+/* текст по центру */
+
+.player-meta{
+
+position:absolute;
+
+top:50%;
+left:50%;
+
+transform:translate(-50%,-50%);
+
+text-align:center;
+
+pointer-events:none;
+
+z-index:2;
+
+}
+
+.player-title{
+
+font-family:Orbitron;
+
+letter-spacing:3px;
+
+font-size:22px;
+
+opacity:.65;
+
+}
+
+.player-artist{
+
+font-size:13px;
+
+opacity:.35;
+
+margin-top:4px;
+
+}
+
+/* UI поверх обложки */
+
+.player-ui{
+
+position:absolute;
+
+bottom:0;
+left:0;
+
+width:100%;
+height:110px;
+
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+
+backdrop-filter:blur(2px);
+background:rgba(0,0,0,0.35);
+
+}
+
+/* прогресс бар */
+
+.player-progress{
+
+position:absolute;
+
+bottom:0;
+left:0;
+
+width:100%;
+height:100%;
+
+}
+
+/* текст */
+
+.player-meta{
+
+text-align:center;
+
+}
+
+.player-title{
+
+font-family:Orbitron;
+letter-spacing:3px;
+font-size:22px;
+
+}
+
+.player-artist{
+
+font-size:13px;
+opacity:.6;
+
+}
+
+/* текущее время */
+
+.player-time{
+
+position:absolute;
+
+bottom:110px;
+
+left:0;
+
+font-size:12px;
+opacity:.8;
+
+pointer-events:none;
+
+transition:left .05s linear;
+
+white-space:nowrap;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="constellationCanvas"></canvas>
+
+<div id="loader">
+<div class="loader-title">LVSKKY</div>
+<div class="progress"><div class="bar"></div></div>
+</div>
+
+<nav>
+<div>LVSKKY</div>
+<div>
+<a href="#home" id="homeBtn">Главная</a>
+<a href="#music" id="musicBtn">Музыка</a>
+</div>
+</nav>
+
+<section class="hero" id="home">
+
+<img src="photo.jpg" class="artist">
+
+<h1 class="glitch">LVSKKY</h1>
+
+<p>
+Мультижанровый артист из Санкт-Петербурга.  
+Жанры здесь выбирает не тренд — их требует сердце.
+</p>
+
+<div class="buttons">
+<a href="https://on.soundcloud.com/1FQF7Ha8TLTJz6S2vV">SoundCloud</a>
+<a href="https://t.me/lvskkyyy">Telegram</a>
+<a href="https://www.tiktok.com/@lvskkyyy">TikTok</a>
+</div>
+
+<div class="scroll-down" id="scrollDown">
+<div class="arrow"></div>
+<div class="arrow"></div>
+<div class="arrow"></div>
+</div>
+
+</section>
+
+<section id="music">
+
+<div class="scroll-up" id="scrollUp">
+<div class="arrow up"></div>
+<div class="arrow up"></div>
+<div class="arrow up"></div>
+</div>
+
+<h2>Релизы</h2>
+
+<div class="releases">
+
+<div class="card" onclick="window.open('https://on.soundcloud.com/lZvmPZ0looFn7mnoXu')">
+<div>Последний релиз</div>
+<div style="font-size:14px;opacity:.7">слушать</div>
+</div>
+
+<div class="card" onclick="window.open('https://on.soundcloud.com/Xay3QsmKpSimHalOe5')">
+<div>Самый популярный релиз</div>
+<div style="font-size:14px;opacity:.7">слушать</div>
+</div>
+
+</div>
+
+<div class="tellme" id="tellmeCard">
+
+<img src="tellme.jpg" class="tellme-cover" id="cover">
+
+<div class="player-ui">
+
+<div class="player-progress">
+
+<div class="player-fill" id="progressFill"></div>
+
+</div>
+
+<div class="player-meta">
+
+<div class="player-title">TELL ME</div>
+<div class="player-artist">lvskky</div>
+
+</div>
+
+<div class="player-time" id="currentTime">0:00</div>
+
+</div>
+
+<div class="play-button" id="playButton">▶</div>
+
+<audio id="audioPlayer" src="tellme.mp3"></audio>
+
+</div>
+
+</section>
+
+<footer>
+© LVSKKY
+</footer>
+
+<script>
+
+/* loader */
+
+window.onload=()=>{
+setTimeout(()=>{
+const loader=document.getElementById("loader")
+loader.style.opacity="0"
+setTimeout(()=>loader.style.display="none",600)
+},2200)
+}
+
+/* scroll logic */
+
+const scrollDown=document.getElementById("scrollDown")
+const scrollUp=document.getElementById("scrollUp")
+const music=document.getElementById("music")
+
+scrollDown.onclick=()=>{
+window.scrollTo({
+top:music.offsetTop - 80,
+behavior:"smooth"
+})
+}
+
+scrollUp.onclick=()=>{
+window.scrollTo({
+top:0,
+behavior:"smooth"
+})
+}
+
+window.addEventListener("scroll",()=>{
+
+if(window.scrollY > 200){
+
+scrollDown.style.opacity="0"
+scrollDown.style.pointerEvents="none"
+
+scrollUp.style.opacity="1"
+scrollUp.style.pointerEvents="auto"
+
+}else{
+
+scrollUp.style.opacity="0"
+scrollUp.style.pointerEvents="none"
+
+scrollDown.style.opacity="1"
+scrollDown.style.pointerEvents="auto"
+
+}
+
+})
+
+/* nav buttons */
+
+document.getElementById("musicBtn").onclick=(e)=>{
+e.preventDefault()
+window.scrollTo({
+top:music.offsetTop - 80,
+behavior:"smooth"
+})
+}
+
+document.getElementById("homeBtn").onclick=(e)=>{
+e.preventDefault()
+window.scrollTo({top:0,behavior:"smooth"})
+}
+
+/* COSMOS */
+
+const canvas = document.getElementById("constellationCanvas")
+const ctx = canvas.getContext("2d")
+
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+
+window.addEventListener("resize",()=>{
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+})
+
+const STAR_COUNT = 130
+const CONSTELLATION_RADIUS = 250
+const DUST_COUNT = 70
+
+const GATHER_TIME = 2000
+const DISSOLVE_TIME = 2000
+
+let stars=[]
+let clusterStars=[]
+let dustParticles=[]
+
+let clusterState="normal"
+
+let nebulaOpacity=0
+let nebulaTargetOpacity=0
+
+/* космос затемнение */
+
+let spaceDim = 1
+let spaceDimTarget = 1
+
+/* реакция космоса */
+
+let cosmosBoost = 1
+let cosmosBoostTarget = 1
+
+let idleStart=0
+let dissolveStart=0
+
+let clusterX=0
+let clusterY=0
+
+let mouseX=window.innerWidth/2
+let mouseY=window.innerHeight/2
+
+/* параллакс */
+
+let camX=0
+let camY=0
+let targetCamX=0
+let targetCamY=0
+
+let idle=false
+let idleTimer
+
+
+/* STAR */
+
+class Star{
+
+constructor(){
+this.reset()
+this.opacity=Math.random()
+this.fade=Math.random()*0.003
+this.depth=Math.random()*0.8+0.2
+}
+
+reset(){
+this.x=Math.random()*canvas.width
+this.y=Math.random()*canvas.height
+this.size=Math.random()*1.8+0.2
+}
+
+update(){
+
+this.opacity-=this.fade
+
+if(this.opacity<=0){
+this.reset()
+this.opacity=1
+}
+
+}
+
+draw(){
+
+let dx=this.x-clusterX
+let dy=this.y-clusterY
+let dist=Math.sqrt(dx*dx+dy*dy)
+
+let dim=1
+
+if(dist>CONSTELLATION_RADIUS){
+dim=spaceDim
+}
+
+let px=this.x+camX*this.depth
+let py=this.y+camY*this.depth
+
+ctx.beginPath()
+ctx.arc(px,py,this.size,0,Math.PI*2)
+ctx.fillStyle=`rgba(255,255,255,${this.opacity*dim*cosmosBoost})`
+ctx.fill()
+
+}
+
+}
+
+
+/* COSMIC DUST */
+
+class Dust{
+
+constructor(){
+this.reset()
+}
+
+reset(){
+
+let angle=Math.random()*Math.PI*2
+let radius=Math.random()*CONSTELLATION_RADIUS
+
+this.x=clusterX+Math.cos(angle)*radius
+this.y=clusterY+Math.sin(angle)*radius
+
+this.size=Math.random()*1.2+0.3
+
+this.vx=(Math.random()-0.5)*0.05
+this.vy=(Math.random()-0.5)*0.05
+
+this.opacity=Math.random()*0.5+0.2
+this.fade=Math.random()*0.002
+
+}
+
+update(){
+
+this.x+=this.vx
+this.y+=this.vy
+
+this.opacity-=this.fade
+
+if(this.opacity<=0){
+this.reset()
+}
+
+}
+
+draw(){
+
+let px=this.x+camX*0.4
+let py=this.y+camY*0.4
+
+ctx.beginPath()
+ctx.arc(px,py,this.size,0,Math.PI*2)
+ctx.fillStyle=`rgba(180,200,255,${this.opacity*nebulaOpacity*4*cosmosBoost})`
+ctx.fill()
+
+}
+
+}
+
+
+/* CREATE STARS */
+
+for(let i=0;i<STAR_COUNT;i++){
+stars.push(new Star())
+}
+
+
+/* MOUSE */
+
+document.addEventListener("mousemove",(e)=>{
+
+mouseX=e.clientX
+mouseY=e.clientY
+
+targetCamX=(e.clientX-window.innerWidth/2)*0.02
+targetCamY=(e.clientY-window.innerHeight/2)*0.02
+
+if(clusterState==="frozen"){
+
+clusterState="dissolve"
+dissolveStart=Date.now()
+
+}
+
+idle=false
+spaceDimTarget=1
+
+clearTimeout(idleTimer)
+
+idleTimer=setTimeout(()=>{
+
+idle=true
+clusterState="gather"
+idleStart=Date.now()
+
+spaceDimTarget=0.35
+
+},5000)
+
+})
+
+
+/* CLUSTER */
+
+function spawnCluster(){
+
+clusterStars=[]
+dustParticles=[]
+
+clusterX=mouseX
+clusterY=mouseY
+
+for(let i=0;i<60;i++){
+
+let angle=Math.random()*Math.PI*2
+let radius=Math.random()*CONSTELLATION_RADIUS
+
+clusterStars.push({
+x:clusterX+Math.cos(angle)*radius,
+y:clusterY+Math.sin(angle)*radius,
+opacity:0,
+targetOpacity:Math.random()*0.8+0.2
+})
+
+}
+
+for(let i=0;i<DUST_COUNT;i++){
+dustParticles.push(new Dust())
+}
+
+}
+
+function drawCluster(){
+
+clusterStars.forEach(star=>{
+
+let px=star.x+camX*0.6
+let py=star.y+camY*0.6
+
+ctx.beginPath()
+ctx.arc(px,py,1.4,0,Math.PI*2)
+ctx.fillStyle=`rgba(255,255,255,${star.opacity})`
+ctx.fill()
+
+})
+
+}
+
+
+/* CLUSTER STATE */
+
+function updateCluster(){
+
+if(clusterState==="gather"){
+
+if(clusterStars.length===0){
+spawnCluster()
+}
+
+let progress=(Date.now()-idleStart)/GATHER_TIME
+
+nebulaOpacity=Math.min(progress,1)*0.18
+nebulaTargetOpacity=0.18
+
+clusterStars.forEach(star=>{
+star.opacity=Math.min(star.targetOpacity,progress)
+})
+
+if(progress>=1){
+clusterState="frozen"
+}
+
+}
+
+
+if(clusterState==="dissolve"){
+
+let progress=(Date.now()-dissolveStart)/DISSOLVE_TIME
+
+nebulaOpacity=(1-progress)*0.18
+nebulaTargetOpacity=0
+
+clusterStars.forEach(star=>{
+star.opacity=star.targetOpacity*(1-progress)
+})
+
+if(progress>=1){
+
+clusterStars=[]
+dustParticles=[]
+clusterState="normal"
+nebulaOpacity=0
+
+}
+
+}
+
+}
+
+
+/* NEBULA */
+
+function drawNebula(){
+
+if(nebulaOpacity<=0) return
+
+let gradient=ctx.createRadialGradient(
+clusterX,clusterY,0,
+clusterX,clusterY,CONSTELLATION_RADIUS
+)
+
+gradient.addColorStop(0,`rgba(120,160,255,${nebulaOpacity*cosmosBoost})`)
+gradient.addColorStop(0.4,`rgba(120,160,255,${nebulaOpacity*0.6*cosmosBoost})`)
+gradient.addColorStop(0.7,`rgba(120,160,255,${nebulaOpacity*0.3*cosmosBoost})`)
+gradient.addColorStop(1,"rgba(120,160,255,0)")
+
+ctx.beginPath()
+ctx.arc(clusterX,clusterY,CONSTELLATION_RADIUS,0,Math.PI*2)
+
+ctx.fillStyle=gradient
+ctx.fill()
+
+}
+
+
+/* DUST */
+
+function updateDust(){
+
+dustParticles.forEach(p=>{
+p.update()
+p.draw()
+})
+
+}
+
+
+/* ANIMATION */
+
+function animate(){
+
+requestAnimationFrame(animate)
+
+camX+=(targetCamX-camX)*0.05
+camY+=(targetCamY-camY)*0.05
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+stars.forEach(star=>{
+star.update()
+star.draw()
+})
+
+updateCluster()
+
+let speed=nebulaTargetOpacity>nebulaOpacity?0.05:0.02
+
+spaceDim+=(spaceDimTarget-spaceDim)*speed
+nebulaOpacity+=(nebulaTargetOpacity-nebulaOpacity)*speed
+
+cosmosBoost+=(cosmosBoostTarget-cosmosBoost)*0.05
+
+drawNebula()
+updateDust()
+drawCluster()
+
+}
+
+animate()
+
+
+/* COSMOS UI REACTION */
+
+const cards=document.querySelectorAll(".card")
+const tellme=document.querySelector(".tellme")
+const buttons=document.querySelectorAll(".buttons a")
+
+cards.forEach(card=>{
+card.addEventListener("mouseenter",()=>{
+
+cosmosBoostTarget=1.15
+
+})
+
+card.addEventListener("mouseleave",()=>{
+
+cosmosBoostTarget=1
+
+})
+})
+
+buttons.forEach(btn=>{
+btn.addEventListener("mouseenter",()=>{
+
+cosmosBoostTarget=1.1
+
+})
+
+btn.addEventListener("mouseleave",()=>{
+
+cosmosBoostTarget=1
+
+})
+})
+
+if(tellme){
+
+tellme.addEventListener("mouseenter",()=>{
+
+cosmosBoostTarget=1.2
+
+})
+
+tellme.addEventListener("mouseleave",()=>{
+
+cosmosBoostTarget=1
+
+})
+
+}
+
+animate()
+
+/* =========================
+   TELL ME PLAYER V3
+========================= */
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+const audio = document.getElementById("audioPlayer")
+const playButton = document.getElementById("playButton")
+
+const fill = document.getElementById("progressFill")
+const progressBar = fill.parentElement
+
+const currentTimeLabel = document.getElementById("currentTime")
+
+/* PLAY / PAUSE */
+
+playButton.addEventListener("click",()=>{
+
+if(audio.paused){
+
+audio.play()
+playButton.innerHTML="❚❚"
+
+if(typeof cosmosBoostTarget !== "undefined"){
+cosmosBoostTarget = 1.35
+}
+
+}else{
+
+audio.pause()
+playButton.innerHTML="▶️"
+
+if(typeof cosmosBoostTarget !== "undefined"){
+cosmosBoostTarget = 1
+}
+
+}
+
+})
+
+/* ПЕРЕМОТКА ТРЕКА */
+
+let isDragging = false
+let dragPercent = 0
+let rect = null
+let lastX = 0
+let rafActive = false
+
+function formatTime(sec){
+
+let m = Math.floor(sec/60)
+let s = Math.floor(sec%60)
+
+if(s < 10) s = "0" + s
+
+return m + ":" + s
+
+}
+
+/* НОВАЯ ФУНКЦИЯ — позиция времени */
+
+function updateTimePosition(percent){
+
+const barWidth = progressBar.offsetWidth
+const labelWidth = currentTimeLabel.offsetWidth
+
+let progressX = percent * barWidth
+
+let left = progressX - labelWidth * 1.15
+
+left = Math.max(0, Math.min(left, barWidth - labelWidth))
+
+currentTimeLabel.style.left = left + "px"
+
+}
+
+function updateDrag(){
+
+if(!isDragging){
+rafActive = false
+return
+}
+
+let x = lastX - rect.left
+x = Math.max(0, Math.min(x, rect.width))
+
+dragPercent = x / rect.width
+
+fill.style.width = (dragPercent * 100) + "%"
+
+updateTimePosition(dragPercent)
+
+/* обновляем время во время drag */
+
+if(audio.duration){
+let dragTime = dragPercent * audio.duration
+currentTimeLabel.innerText = formatTime(dragTime)
+}
+
+requestAnimationFrame(updateDrag)
+
+}
+
+function startRAF(){
+if(!rafActive){
+rafActive = true
+requestAnimationFrame(updateDrag)
+}
+}
+
+/* клик */
+
+progressBar.addEventListener("click",(e)=>{
+
+rect = progressBar.getBoundingClientRect()
+
+let x = e.clientX - rect.left
+x = Math.max(0, Math.min(x, rect.width))
+
+dragPercent = x / rect.width
+
+fill.style.width = (dragPercent * 100) + "%"
+
+audio.currentTime = dragPercent * audio.duration
+
+updateTimePosition(dragPercent)
+
+})
+
+/* начало drag */
+
+progressBar.addEventListener("mousedown",(e)=>{
+
+isDragging = true
+
+rect = progressBar.getBoundingClientRect()
+
+lastX = e.clientX
+
+startRAF()
+
+})
+
+/* движение мыши */
+
+document.addEventListener("mousemove",(e)=>{
+
+if(!isDragging) return
+
+lastX = e.clientX
+
+})
+
+/* конец drag */
+
+document.addEventListener("mouseup",()=>{
+
+if(isDragging){
+audio.currentTime = dragPercent * audio.duration
+}
+
+isDragging = false
+
+})
+
+/* ОБНОВЛЕНИЕ ПРОГРЕССА И ВРЕМЕНИ */
+
+audio.addEventListener("timeupdate",()=>{
+
+if(!audio.duration) return
+
+let progress = audio.currentTime / audio.duration
+
+if(!isDragging){
+fill.style.width = (progress * 100) + "%"
+}
+
+currentTimeLabel.innerText = formatTime(audio.currentTime)
+
+updateTimePosition(progress)
+
+})
+
+/* конец трека */
+
+audio.addEventListener("ended",()=>{
+
+fill.style.width="0%"
+playButton.innerHTML="▶️"
+
+updateTimePosition(0)
+
+if(typeof cosmosBoostTarget !== "undefined"){
+cosmosBoostTarget = 1
+}
+
+})
+
+})
+
+</script>
+
+</body>
+</html>
